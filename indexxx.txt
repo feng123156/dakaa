@@ -1,0 +1,359 @@
+<!DOCTYPE html> 
+
+<html lang="zh"> 
+
+<head> 
+
+<meta charset="utf-8"> 
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+<title>达克效应认知训练</title> 
+
+<style> 
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue} 
+
+body{background:#f7f9fc;padding:20px} 
+
+.card{max-width:900px;margin:0 auto;background:#fff;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:28px 24px} 
+
+.title{font-size:24px;font-weight:700;color:#1e293b;margin-bottom:12px} 
+
+.subtitle{color:#64748b;margin-bottom:24px} 
+
+.btn{padding:10px 20px;border-radius:12px;border:none;font-weight:600;cursor:pointer;margin-right:8px;margin-bottom:8px} 
+
+.btn-primary{background:#2563eb;color:#fff} 
+
+.btn-light{background:#e2e8f0;color:#334155} 
+
+.btn-active{background:#1e40af;color:#fff} 
+
+.section{margin:24px 0} 
+
+.section-title{font-size:18px;font-weight:600;color:#0f172a;margin-bottom:12px} 
+
+.drawing{border:2px solid #e2e8f0;border-radius:16px;padding:20px;background:#f8fafc;margin-bottom:20px} 
+
+.drawing img{max-width:100%;border-radius:8px} 
+
+.question{background:#f1f5f9;padding:16px;border-radius:12px;margin-bottom:16px} 
+
+.q-title{font-weight:600;margin-bottom:8px} 
+
+textarea{width:100%;padding:12px;border:2px solid #cbd5e1;border-radius:12px;resize:vertical;min-height:100px;margin-top:8px} 
+
+.feedback{margin-top:10px;padding:10px 14px;border-radius:10px} 
+
+.correct{background:#dcfce7;color:#166534} 
+
+.wrong{background:#fee2e2;color:#991b1b} 
+
+.score{font-size:18px;font-weight:700;color:#1e293b;margin:16px 0} 
+
+.stage{padding:12px 16px;background:#f0f9ff;border-radius:12px;color:#075985;font-weight:600;margin:12px 0} 
+
+.login-box{max-width:400px;margin:60px auto;padding:32px;border-radius:20px;background:#fff} 
+
+input{width:100%;padding:12px;border:2px solid #cbd5e1;border-radius:12px;margin:8px 0 16px} 
+
+.table{width:100%;border-collapse:collapse;margin:20px 0} 
+
+.table th,.table td{padding:12px;text-align:left;border-bottom:1px solid #e2e8f0} 
+
+.table th{background:#f1f5f9} 
+
+.hide{display:none} 
+
+</style> 
+
+</head> 
+
+<body> 
+
+ 
+
+<!-- 登录页 --> 
+
+<div id="login" class="card login-box"> 
+
+<div class="title">🔐 登录</div> 
+
+<div class="subtitle">请选择身份并登录</div> 
+
+<div>姓名：<input id="name" placeholder="输入姓名"></div> 
+
+<div>班级：<input id="cls" placeholder="输入班级"></div> 
+
+<button class="btn btn-primary" onclick="login('student')">学生登录</button> 
+
+<button class="btn btn-light" onclick="login('teacher')">老师登录</button> 
+
+</div> 
+
+ 
+
+<!-- 学生主页面 --> 
+
+<div id="student" class="card hide"> 
+
+<div class="title">📈 达克效应认知训练</div> 
+
+<div class="subtitle">学习理论 → 答题训练 → 认知评估</div> 
+
+ 
+
+<div class="section"> 
+
+<div class="section-title">📘 达克效应核心概念</div> 
+
+<div>达克效应：<b>能力越低的人越容易高估自己，能力强者反而倾向低估自己</b>。</div> 
+
+<div>两大特征：① 低能力者元认知缺失，无法意识到自己不足；② 高能力者以为别人也具备同样能力。</div> 
+
+</div> 
+
+ 
+
+<div class="section drawing"> 
+
+<div class="section-title">📊 经典四阶段图示</div> 
+
+<div>1. 愚昧之山：新手 → 自信极高、能力很低</div> 
+
+<div>2. 绝望之谷：遭遇挫折 → 自信暴跌、开始觉醒</div> 
+
+<div>3. 开悟之坡：持续学习 → 能力提升、自信稳步回升</div> 
+
+<div>4. 平稳高原：大师 → 能力与自信匹配</div> 
+
+</div> 
+
+ 
+
+<div class="section"> 
+
+<div class="section-title">🎯 选择难度</div> 
+
+<button class="btn btn-light" onclick="setLevel(0)">初级</button> 
+
+<button class="btn btn-light" onclick="setLevel(1)">中级</button> 
+
+<button class="btn btn-light" onclick="setLevel(2)">高级</button> 
+
+<div style="margin-top:12px" id="caseTip">当前：初级 第1/2题</div> 
+
+<button class="btn btn-light" onclick="nextCase()" style="margin-left:8px">换一题</button> 
+
+</div> 
+
+ 
+
+<div id="qBox" class="section"> 
+
+<div class="question"> 
+
+<div class="q-title" id="qTitle">题目加载中…</div> 
+
+<div id="qDesc"></div> 
+
+<textarea id="ans" placeholder="请输入答案…"></textarea> 
+
+</div> 
+
+<button class="btn btn-primary" onclick="check()">提交批改</button> 
+
+<button class="btn btn-light" onclick="clearAns()">清空</button> 
+
+</div> 
+
+ 
+
+<div id="result" class="hide"> 
+
+<div class="feedback" id="fb"></div> 
+
+<div class="score" id="scoreTxt">得分：0/15</div> 
+
+<div class="stage" id="stage"></div> 
+
+<div class="section-title">📌 标准答案</div> 
+
+<div id="stdAns"></div> 
+
+</div> 
+
+</div> 
+
+ 
+
+<!-- 老师后台 --> 
+
+<div id="teacher" class="card hide"> 
+
+<div class="title">👨‍🏫 老师后台</div> 
+
+<div class="subtitle">班级成绩统计</div> 
+
+<table class="table"> 
+
+<thead><tr><th>班级</th><th>姓名</th><th>得分</th><th>阶段</th></tr></thead> 
+
+<tbody id="data"></tbody> 
+
+</table> 
+
+</div> 
+
+ 
+
+<script> 
+
+const user = {role:"",name:"",cls:"",score:0,stage:""}; 
+
+const levels = ["初级","中级","高级"]; 
+
+const cases = [ 
+
+[ 
+
+{title:"初级题1",desc:"同学A刚学会一点PPT，就觉得自己比老师还厉害。请问他处在达克效应的哪个阶段？为什么？",std:"愚昧之山；刚入门缺乏认知，高估自己。",score:15,check:(a)=>/愚昧|山/.test(a)}, 
+
+{title:"初级题2",desc:"同学B第一次考试考很好，第二次惨败，突然觉得自己什么都不会。他处在哪个阶段？",std:"绝望之谷；从高估跌落到觉醒，自信骤降。",score:15,check:(a)=>/绝望|谷/.test(a)} 
+
+], 
+
+[ 
+
+{title:"中级题1",desc:"举例说明生活中‘愚昧之山’现象，并写出1个克服方法。",std:"例：新手觉得自己很懂；策略：寻求反馈、客观测试、持续学习。",score:15,check:(a)=>a.length>20}, 
+
+{title:"中级题2",desc:"为什么高手容易低估自己？用达克效应解释。",std:"高手以为别人和自己一样强，产生偏差低估。",score:15,check:(a)=>/低估|以为别人/.test(a)} 
+
+], 
+
+[ 
+
+{title:"高级题1",desc:"完整描述四阶段变化，并说明对学习的启示。",std:"愚昧之山→绝望之谷→开悟之坡→平稳高原；启示：保持谦卑、持续学习、接受反馈。",score:15,check:(a)=>a.length>40}, 
+
+{title:"高级题2",desc:"分析‘元认知’在达克效应中的作用。",std:"元认知弱→无法自知（愚昧）；元认知强→能正确评估（开悟）。",score:15,check:(a)=>/元认知/.test(a)} 
+
+] 
+
+]; 
+
+ 
+
+let lv=0,idx=0; 
+
+const data = []; 
+
+ 
+
+function login(role){ 
+
+user.role=role;user.name=document.getElementById("name").value||"学生";user.cls=document.getElementById("cls").value||"一班"; 
+
+document.getElementById("login").classList.add("hide"); 
+
+if(role=="student"){document.getElementById("student").classList.remove("hide");renderCase()} 
+
+else{document.getElementById("teacher").classList.remove("hide");renderTeacher()} 
+
+} 
+
+ 
+
+function renderCase(){ 
+
+const c=cases[lv][idx]; 
+
+document.getElementById("caseTip").textContent=`当前：${levels[lv]} 第${idx+1}/2题`; 
+
+document.getElementById("qTitle").textContent=c.title; 
+
+document.getElementById("qDesc").textContent=c.desc; 
+
+document.getElementById("ans").value=""; 
+
+document.getElementById("result").classList.add("hide"); 
+
+} 
+
+ 
+
+function setLevel(n){lv=n;idx=0;renderCase()} 
+
+function nextCase(){idx=(idx+1)%cases[lv].length;renderCase()} 
+
+ 
+
+function check(){ 
+
+const c=cases[lv][idx]; 
+
+const a=document.getElementById("ans").value.trim(); 
+
+const ok=c.check(a); 
+
+const s=ok?c.score:0; 
+
+user.score=s; 
+
+if(lv==0)user.stage=s>=15?"愚昧之山":"已觉醒"; 
+
+if(lv==1)user.stage=s>=15?"开悟之坡":"进步中"; 
+
+if(lv==2)user.stage=s>=15?"平稳高原":"优秀学习者"; 
+
+ 
+
+const fb=document.getElementById("fb"); 
+
+const scoreTxt=document.getElementById("scoreTxt"); 
+
+const stage=document.getElementById("stage"); 
+
+const stdAns=document.getElementById("stdAns"); 
+
+const result=document.getElementById("result"); 
+
+ 
+
+result.classList.remove("hide"); 
+
+fb.className=ok?"feedback correct":"feedback wrong"; 
+
+fb.textContent=ok?"✅ 回答正确":"❌ 回答有误"; 
+
+scoreTxt.textContent=`得分：${s}/15`; 
+
+stage.textContent=`认知阶段判定：${user.stage}`; 
+
+stdAns.textContent=c.std; 
+
+ 
+
+if(user.role=="student"){data.push({cls:user.cls,name:user.name,score:s,stage:user.stage})} 
+
+} 
+
+ 
+
+function clearAns(){document.getElementById("ans").value="";document.getElementById("result").classList.add("hide")} 
+
+function renderTeacher(){ 
+
+const t=document.getElementById("data");t.innerHTML=""; 
+
+data.forEach(i=>{const tr=document.createElement("tr"); 
+
+tr.innerHTML=`<td>${i.cls}</td><td>${i.name}</td><td>${i.score}</td><td>${i.stage}</td>`;t.appendChild(tr)}) 
+
+} 
+
+</script> 
+
+</body> 
+
+</html> 
